@@ -1,24 +1,30 @@
 import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../Provider/AuthProvider";
 
 const Login = () => {
-    const {logIn , setUser} = useContext(AuthContext)
-    const handleSubmit=(e)=>{
-        e.preventDefault()
-        const form = e.target;
-        const email = form.email.value;
-        const password = form.password.value;
+  const { logIn, setUser } = useContext(AuthContext);
+  const location = useLocation();
+  const navigate = useNavigate();
 
-    logIn(email,password)
-    .then((result)=>{
-     const user = result.user
-     setUser(user)
-    })
-    .catch((error) => {
-        alert(error.code)
+  //  getting the pathname location in the state after clciking the reademore from pricvate route
+  // console.log(location);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const email = form.email.value;
+    const password = form.password.value;
+
+    logIn(email, password)
+      .then((result) => {
+        const user = result.user;
+        setUser(user);
+        navigate(location?.state ? location.state : "/");
+      })
+      .catch((error) => {
+        alert(error.code);
       });
-    }
+  };
 
   return (
     <div className="min-h-screen flex justify-center items-center ">
@@ -32,7 +38,7 @@ const Login = () => {
               <span className="label-text">Email</span>
             </label>
             <input
-            name="email"
+              name="email"
               type="email"
               placeholder="email"
               className="input input-bordered"
@@ -44,7 +50,7 @@ const Login = () => {
               <span className="label-text">Password</span>
             </label>
             <input
-            name="password"
+              name="password"
               type="password"
               placeholder="password"
               className="input input-bordered"
